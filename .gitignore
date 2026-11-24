@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+test-results/
+allure-results/
+allure-report/
+.env
+.app/
+.wrangler/
+node_modules/
+ai/sessions/*
+!ai/sessions/.gitkeep

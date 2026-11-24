@@ -1,0 +1,47 @@
+[project]
+name = "mpl-registration-qa"
+version = "1.0.0"
+description = "Test automation for the MPL Season 7 player registration workflow"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--screenshot=only-on-failure",
+    "--tracing=retain-on-failure",
+    "--output=test-results",
+]
+markers = [
+    "smoke: fast, business-critical checks run on every push",
+    "regression: full functional coverage",
+    "mocked: UI tests where the backend is replaced by route interception",
+    "api: HTTP-level tests against /api/*",
+    "e2e: full-stack journeys against a running app + database",
+    "a11y: automated accessibility audits (axe-core)",
+    "known_bug: test documents an open defect from docs/bug-reports.md",
+]
+xfail_strict = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "PT", "RUF"]
+# The app under test uses en/em dashes and Bangla script in its copy; tests must match it.
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "src"
+packages = ["mpl_qa"]
+strict = true
+ignore_missing_imports = true
