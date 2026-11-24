@@ -179,22 +179,31 @@ jobs:
           pattern: allure-results-*
           merge-multiple: true
           path: allure-results
-      - name: Load report history
-        uses: actions/checkout@v4
-        continue-on-error: true
+      - uses: actions/setup-java@v4
         with:
-          ref: gh-pages
-          path: gh-pages
-      - name: Build Allure report
-        uses: simple-elf/allure-report-action@v1.12
+          distribution: temurin
+          java-version: "21"
+      - uses: actions/setup-python@v5
         with:
-          allure_results: allure-results
-          allure_history: allure-history
-          gh_pages: gh-pages
-          keep_reports: 30
+          python-version: ${{ env.PYTHON_VERSION }}
+      - uses: actions/checkout@v4
+        with:
+          path: qa
+          sparse-checkout: scripts
+      - name: Carry over trend history from the previous report
+        run: |
+          mkdir -p allure-results
+          git clone --depth 1 --branch gh-pages \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}" old || true
+          if [ -d old/history ]; then cp -r old/history allure-results/history; fi
+      - name: Build Allure report and one-page summary
+        run: |
+          npx --yes allure-commandline@2.30.0 generate allure-results --clean -o site
+          python qa/scripts/build_summary_report.py --results allure-results --out site/summary.html
+          touch site/.nojekyll
       - name: Publish to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: allure-history
+          publish_dir: site
