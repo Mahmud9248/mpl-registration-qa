@@ -13,3 +13,4 @@ allure-report/
 node_modules/
 ai/sessions/*
 !ai/sessions/.gitkeep
+reports/

@@ -93,6 +93,7 @@ pytest tests/api                     # one layer
 pytest -m known_bug --runxfail       # current state of every open bug
 pytest --headed --slowmo 300 -k test_complete_registration tests/ui   # watch one journey
 pytest --alluredir=allure-results && allure serve allure-results
+python scripts/build_summary_report.py   # quick one-page summary -> reports/summary.html
 ```
 
 Failed tests keep a Playwright trace in `test-results/`; open it with
